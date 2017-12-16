@@ -12,14 +12,11 @@ class chip8
 	uint16_t stack[16];
 	uint8_t sp; // Stack Pointer
 	uint8_t key[16];
-	bool screen[64 * 32];
+	uint8_t screen[64 * 32];
 
 	void initialize();
 	void emulateCycle();	
 	void fetchOpcode();
+	void decodeOpcode();
 };
 
-void chip8::fetchOpcode()
-{
-	opcode = memory[pc] << 8 | memory[pc + 1];
-}
