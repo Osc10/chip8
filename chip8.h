@@ -1,7 +1,11 @@
 #include <stdint.h>
 #include <iostream>
 #include <assert.h>
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
 
+// execute srand in main
 //#define NDEBUG
 
 class chip8

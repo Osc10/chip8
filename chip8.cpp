@@ -154,5 +154,88 @@ void chip8::decodeOpcode()
 		case 0xB000:
 			pc = v[0] + (opcode & 0x0FFF);
 		break;
+
+		case 0xC000:
+			uint8_t X = (opcode & 0x0F00) >> 8;
+			assert(X >= 0 && X < 16);
+			v[X] = (rand() % 256) & (opcode & 0x00FF);	
+			pc += 2;
+		break;
+
+		case 0xD000:
+			uint8_t X = (opcode & 0x0F00) >> 8;
+			uint8_t Y = (opcode & 0x00F0) >> 4;
+			assert(X >= 0 && X < 16);
+			assert(Y >= 0 && Y < 16);
+			uint16_t coord = v[X] + 64 * v[Y]; 
+			for(int i = 0; i < (opcode & 0x000F); ++i)
+			{
+				uint8_t row = memory[I + 8*i];
+            	for(int j = 0; j < 8; ++j)
+				{
+					uint8_t current = screen[coord + j + 64*i];
+					uint8_t next = (row >> j) & 0x1;
+					v[0xF] = (current == 1 && next == 0) ? 1 : v[0xF];  
+					screen[coord + j + 64*i] = next;
+				}
+			pc += 2;
+		break;
+
+		case 0xE000:
+			switch(opcode & 0x00F0)
+			{
+				case 0x0090:
+					uint8_t X = (opcode & 0x0F00) >> 8;
+					assert(X >= 0 && X < 16);
+					pc = (key[v[X]] != 0) ? pc + 4 : pc + 2;
+				break;
+
+				case 0x00A0:
+					uint8_t X = (opcode & 0x0F00) >> 8;
+					assert(X >= 0 && X < 16);
+					pc = (key[v[X]] == 0) ? pc + 4 : pc + 2;
+				break;
+
+				default:
+					printf("Unknown opcode 0x%X\n", opcode);
+			}
+		break;
+
+		case 0xF000:
+			switch(opcode & 0x00FF)
+			{
+				case 0x0007:
+				break;
+
+				case 0x000A:
+				break;
+
+				case 0x0015:
+				break;
+
+				case 0x0018:
+				break;
+
+				case 0x001E:
+				break;
+
+				case 0x0029:
+				break;
+
+				case 0x0033:
+				break;
+
+				case 0x0055:
+				break;
+
+				case 0x0065:
+				break;
+				
+				default:
+					printf("Unknown opcode 0x%X\n", opcode);
+		break;
+
+		default:
+			printf("Unknown opcode 0x%X\n", opcode);
 	}
 }
